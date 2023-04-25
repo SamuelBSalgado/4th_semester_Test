@@ -15,14 +15,34 @@
 | If the plate is empty or duplicated, the promise is rejected.                                      |
 +----------------------------------------------------------------------------------------------------+
 
-+-------------------------------+
-| MODIFICATIONS 04/25/2023 (1)  |
-+-------------------------------+------------------------------------------------------------------------------+
+                                          +---------------+
+                                          | MODIFICATIONS |
++------------------------+                +---------------+
+| 04/25/2023 (1) POINT 1 |
++------------------------+-------------------------------------------------------------------------------------+
 | In the previous version there was a bug where the "for" kept traversing the array even though it had already |
 | found a duplicate. This caused it to print the new vehicle 3 times. The solution was to stop the "for"       |
 | as soon as it found the first duplicate, assigning a boolean value to a variable that is then used to        |
 | determine if there is a duplicate or not.                                                                    |
 +--------------------------------------------------------------------------------------------------------------+
++------------------------+
+| 04/25/2023 (2) POINT 1 |
++------------------------+--------------------------------------------------------------------------------------+
+| In the previous version, I didn't include ".then()" nor ".catch();", so the function,                        |
+| when generating a promise, would first print to the console and then resolve the promise. I have now included |
+| ".then()" and ".catch();", so now it still works, but in the most correct way possible.                       |
+| Also, I changed the normal function to an arrow function.                                                     |
++---------------------------------------------------------------------------------------------------------------+
+
++------------------------+
+| 04/25/2023 (3) POINT 2 |
++------------------------+--------------------------------------------------------------------------------------+
+| In the previous version, I did not use ".then()" or ".catch()", which is bad because I am working with an     |
+| asynchronous function, which means that the "result" of the asynchronous was first printed to the console     |
+| before that the function was even solved. I fixed it by adding these 2 methods. Now it works as correctly as  |
+| possible.                                                                                                     |
+| Also, I changed the normal function to an arrow function.                                                     |
++---------------------------------------------------------------------------------------------------------------+
 */
 const carsArr = [
   {licensePlate: '1234', model: '2023', brand: 'McLaren', color: 'Black'},
@@ -30,7 +50,7 @@ const carsArr = [
   {licensePlate: '3412', model: '2023', brand: 'Lamborghini', color: 'Blue'}
 ];
 
-function saveVehicle (vehicle, carsArr){
+const saveVehicle = (vehicle, carsArr) => {
   return new Promise((resolve, reject) => {
     let isDuplicate = false;
     // If the license plate is empty, the promise is rejected.
@@ -51,8 +71,13 @@ function saveVehicle (vehicle, carsArr){
     }
   });
 };
-saveVehicle({licensePlate: '1010', model: 'LaFerrari', brand:'Ferrari', color:'Red'}, carsArr);
-console.log(carsArr);
+saveVehicle({licensePlate: '1010', model: 'LaFerrari', brand:'Ferrari', color:'Red'}, carsArr)
+.then(() => {
+  console.log(carsArr);
+})
+.catch((error) => {
+  console.log(error);
+});
 
 
 
@@ -69,7 +94,7 @@ const vehiclesArr = [
   { licensePlate: '3412', model: '2025', brand: 'McLaren', color: 'Green' }
 ];
 
-async function addVehiclesByBrand(vehiclesArr){
+const addVehiclesByBrand = async (vehiclesArr) => {
   // Check if the info is an array.
   if (!Array.isArray(vehiclesArr)){
     throw new Error("It's not an array");
@@ -95,7 +120,14 @@ vehiclesArr.forEach(v => {
 
 return sum;
 };
-console.log(addVehiclesByBrand(vehiclesArr));
+
+addVehiclesByBrand(vehiclesArr)
+.then((result) => {
+  console.log(result);
+})
+.catch((error) => {
+  console.log(error);
+});
 
 
 
