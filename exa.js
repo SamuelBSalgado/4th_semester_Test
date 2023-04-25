@@ -14,33 +14,45 @@
 | Create a promise that allows saving a vehicle in an array of vehicles (plate, model, make, color). |
 | If the plate is empty or duplicated, the promise is rejected.                                      |
 +----------------------------------------------------------------------------------------------------+
+
++-------------------------------+
+| MODIFICATIONS 04/25/2023 (1)  |
++-------------------------------+------------------------------------------------------------------------------+
+| In the previous version there was a bug where the "for" kept traversing the array even though it had already |
+| found a duplicate. This caused it to print the new vehicle 3 times. The solution was to stop the "for"       |
+| as soon as it found the first duplicate, assigning a boolean value to a variable that is then used to        |
+| determine if there is a duplicate or not.                                                                    |
++--------------------------------------------------------------------------------------------------------------+
 */
 const carsArr = [
-    { licensePlate: '1234', model: '2023', brand: 'McLaren', color: 'Black' },
-    { licensePlate: '2341', model: '2023', brand: 'Bugatti', color: 'Brown' },
-    { licensePlate: '3412', model: '2023', brand: 'Lamborghini', color: 'Blue' }
-  ];
+  {licensePlate: '1234', model: '2023', brand: 'McLaren', color: 'Black'},
+  {licensePlate: '2341', model: '2023', brand: 'Bugatti', color: 'Brown'},
+  {licensePlate: '3412', model: '2023', brand: 'Lamborghini', color: 'Blue'}
+];
 
 function saveVehicle (vehicle, carsArr){
-    return new Promise((resolve, reject) => {
-      let isDuplicate = false;
-      // If the license plate is empty, the promise is rejected.
-      for (let i=0; i<carsArr.length; i++){
-        if (!vehicle.licensePlate){ 
-            reject('The plate is empty');
-            // If the license plate is duplicated, the promise is rejected.
-          } else if(vehicle.licensePlate === carsArr[i].licensePlate){
-            reject('The plate is duplicated');
-          } else{
-            // Add the vehicle to the vehicles array (carsArr).
-            carsArr.push(vehicle);
-            resolve('Vehicle saved successfully');
-          }
+  return new Promise((resolve, reject) => {
+    let isDuplicate = false;
+    // If the license plate is empty, the promise is rejected.
+    for (let i=0; i<carsArr.length; i++){
+      if (!vehicle.licensePlate){ 
+        reject('The plate is empty');
+        // Check if there's already a license plate with the values of the new one you want to enter.
+      } else if(vehicle.licensePlate === carsArr[i].licensePlate){
+        isDuplicate = true;
+        break;
       }
-    });
-  };
+    } // If it found a duplicate, it rejects the promise.
+    if (isDuplicate){
+      reject('The plate is duplicated');
+    } else{ // If no duplicates were found, resolve the promise.
+      carsArr.push(vehicle);
+      resolve('Vehicle saved successfully');
+    }
+  });
+};
 saveVehicle({licensePlate: '1010', model: 'LaFerrari', brand:'Ferrari', color:'Red'}, carsArr);
-  console.log(carsArr);
+console.log(carsArr);
 
 
 
@@ -62,26 +74,26 @@ async function addVehiclesByBrand(vehiclesArr){
   if (!Array.isArray(vehiclesArr)){
     throw new Error("It's not an array");
   } else{
-      // Check if it contains the necessary information of a vehicle.
-      for (let i=0; i<vehiclesArr.length; i++){
-          if (!vehiclesArr[i].licensePlate || !vehiclesArr[i].model || !vehiclesArr[i].brand || !vehiclesArr[i].color){
-              throw new Error("There's not enough information");
-          }
+    // Check if it contains the necessary information of a vehicle.
+    for (let i=0; i<vehiclesArr.length; i++){
+      if (!vehiclesArr[i].licensePlate || !vehiclesArr[i].model || !vehiclesArr[i].brand || !vehiclesArr[i].color){
+        throw new Error("There's not enough information");
       }
+    }
   }
 
-  // Sum of vehicles grouped by brand
-  const sum = {};
+// Sum of vehicles grouped by brand
+const sum = {};
 
-  vehiclesArr.forEach(v => {
-    if (!sum[v.brand]){
-      sum[v.brand] = 1;
-    } else {
-      sum[v.brand]++;
-    }
-  });
+vehiclesArr.forEach(v => {
+  if (!sum[v.brand]){
+    sum[v.brand] = 1;
+  } else {
+    sum[v.brand]++;
+  }
+});
 
-  return sum;
+return sum;
 };
 console.log(addVehiclesByBrand(vehiclesArr));
 
@@ -113,14 +125,14 @@ app.get('/vehicles', (req, res) => {
 // GET (/vehicles/licensePlate/:licensePlate)
 app.get('/vehicles/licensePlate/:licensePlate', (req, res) => {
   if (vehicles.length === 0){
-      res.send('There are no vehicles stored in the array');
+    res.send('There are no vehicles stored in the array');
   } else{
-      for(let i=0; i<vehicles.length; i++){
-          if (vehicles[i].licensePlate === req.params.licensePlate){
-              res.send(vehicles[i]);
-          }
+    for(let i=0; i<vehicles.length; i++){
+      if (vehicles[i].licensePlate === req.params.licensePlate){
+        res.send(vehicles[i]);
       }
-      res.send('There are no vehicles with the license plate ' + req.params.licensePlate);
+    }
+    res.send('There are no vehicles with the license plate: ' + req.params.licensePlate);
   }
 });
 
